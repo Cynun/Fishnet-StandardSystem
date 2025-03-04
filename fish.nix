@@ -5,12 +5,12 @@
 # Import this file into your Nixos profile to get it running.
 
 { config, pkgs, ... }:{
-    imports =
-    [ 
-      ./cjdns.nix
-    ];
     
-    services = {
-        cjdns.enable=true;
-    };
+  imports = [ 
+    ./cjdns.nix
+  ];
+  
+  services = {
+      cjdns.enable=true;
+  };
 }
