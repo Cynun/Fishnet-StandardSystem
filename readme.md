@@ -10,7 +10,7 @@
 cd /etc/nixos/
 git clone https://github.com/Cynun/Fishnet-StandardSystem.git ./fishnet
 ```
-随后根据需求修改配置文件即可。
+随后根据需求修改fish.nix中的配置即可。
 
 ## 更新
 使用git。
@@ -39,10 +39,10 @@ After installing NixOS, clone this repository to your NixOS configuration direct
 cd /etc/nixos/
 git clone https://github.com/Cynun/Fishnet-StandardSystem.git ./fishnet
 ```
-Then modify the configuration files as needed.
+Then modify fish.nix as needed.
 
 ## Updating
-use git.
+Use git.
 ```bash
 git fetch origin & git merge origin/main
 ```
