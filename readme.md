@@ -12,6 +12,12 @@ git clone https://github.com/Cynun/Fishnet-StandardSystem.git ./fishnet
 ```
 随后根据需求修改配置文件即可。
 
+## 更新
+使用git。
+```bash
+git fetch origin & git merge origin/main
+```
+
 ## 参考链接
 - [NixOS 官方网站](https://nixos.org/)
 - [NixOS Options & Packages 查询](https://search.nixos.org/)
@@ -34,6 +40,12 @@ cd /etc/nixos/
 git clone https://github.com/Cynun/Fishnet-StandardSystem.git ./fishnet
 ```
 Then modify the configuration files as needed.
+
+## Updating
+use git.
+```bash
+git fetch origin & git merge origin/main
+```
 
 ### Reference Links
 - [NixOS Official Website](https://nixos.org/)

@@ -7,10 +7,16 @@
 { config, pkgs, ... }:{
     
   imports = [ 
-    ./cjdns.nix
+      ./Route.nix
   ];
   
   services = {
-      cjdns.enable=true;
+    cjdns.enable=true;
   };
+
+  networking = {
+    nat.enable = true;
+    nat.enableIPv6 = true;
+    wireguard.enable = true;
+  }
 }
