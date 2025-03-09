@@ -7,6 +7,7 @@
     cjdns
     cjdns-tools
     wireguard-tools
+    qrencode
   ];
 
   networking = {
