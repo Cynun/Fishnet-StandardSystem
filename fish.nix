@@ -6,7 +6,7 @@
 
 { config, pkgs, ... }: {
 
-  imports = [ ./Route.nix ];
+  imports = [ ./Route.nix /*./Storage.nix*/ ./Service.nix ];
 
   networking = {
 
@@ -53,6 +53,19 @@
         };
       };
     };
+
+    /*kubo = {
+      enable = true;
+
+      # See more at https://github.com/ipfs/kubo/blob/master/docs/config.md
+      settings = {
+        #Addresses.Gateway = "/ip4/0.0.0.0/tcp/8080";
+        #Addresses.API = "/ip4/0.0.0.0/tcp/5001";
+        #Identity.PrivKey = "";
+        Bootstrap = [ ];
+        Datastore.StorageMax = "10GB";
+      };
+    };*/
 
   };
 
