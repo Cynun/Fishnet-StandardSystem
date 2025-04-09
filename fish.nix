@@ -37,6 +37,8 @@
     # Remember to change cjdns keys and IPv6 address in /etc/cjdns.keys and /etc/cjdns.public!
     # Sadly we can't change the path or fileformat in nix conf for now :(
     cjdns = {
+      enable=true;
+
       UDPInterface.bind = "IP:Port"; # Address and port to bind UDP tunnels to.
 
       # Any remote cjdns nodes that offer these passwords on connection will be allowed to route through this node.
