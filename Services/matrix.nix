@@ -5,12 +5,27 @@
 { config, pkgs, lib, ... }: {
   services = {
     # See https://nixos.org/manual/nixos/stable/index.html#module-services-matrix-element-web
-    nginx.virtualHosts."${config.services.matrix-synapse.settings.server_name}" = {
+    nginx.virtualHosts."element.my-domain.tld" = {
       root = pkgs.element-web.override {
         # See https://github.com/element-hq/element-web/blob/develop/config.sample.json
-        conf = { default_theme = "dark"; };
+        conf = {
+          default_theme = "dark";
+          "default_server_config" = {
+            "m.homeserver" = {
+              "base_url" =
+                "http://${config.services.matrix-synapse.settings.server_name}";
+              "server_name" =
+                "${config.services.matrix-synapse.settings.server_name}";
+            };
+          };
+        };
       };
     };
+
+    nginx.virtualHosts."${config.services.matrix-synapse.settings.server_name}" =
+      {
+        locations."/" = { proxyPass = "http://localhost:8008/"; };
+      };
 
     # We can only use sqlite3 for matrix when "i18n.defaultLocale" is not "C"...
     # postgresql = {
