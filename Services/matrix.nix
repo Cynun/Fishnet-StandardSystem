@@ -1,13 +1,16 @@
-# Service Configurations
+# Matrix&Element Configurations
 #
-#
+# Woomy
 
 { config, pkgs, lib, ... }: {
   services = {
-    nginx.virtualHosts."${config.services.matrix-synapse.settings.server_name}" =
-      {
-        locations."/" = { proxyPass = "http://localhost:8008/"; };
+    # See https://nixos.org/manual/nixos/stable/index.html#module-services-matrix-element-web
+    nginx.virtualHosts."${config.services.matrix-synapse.settings.server_name}" = {
+      root = pkgs.element-web.override {
+        # See https://github.com/element-hq/element-web/blob/develop/config.sample.json
+        conf = { default_theme = "dark"; };
       };
+    };
 
     # We can only use sqlite3 for matrix when "i18n.defaultLocale" is not "C"...
     # postgresql = {
