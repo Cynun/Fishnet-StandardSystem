@@ -8,7 +8,7 @@
     postgresql = {
       initialScript = pkgs.writeText "init-sql-script" ''
         alter user gitea with password '${builtins.readFile ./gitea_dbpass}';
-      ''; # config.sops.secrets."postgres/gitea_dbpass".path;
+      ''; # TODO:config.sops.secrets."postgres/gitea_dbpass".path;
 
       ensureDatabases = [ config.services.gitea.database.name ];
       ensureUsers = [{
@@ -23,13 +23,12 @@
     };
 
     gitea = {
-      enable = true;
       appName = "My awesome Gitea server"; # Give the site a name
       database = {
         name = "gitea";
         type = "postgres";
         password = "${builtins.readFile
-          ./gitea_dbpass}"; # config.sops.secrets."postgres/gitea_dbpass".path;
+          ./gitea_dbpass}"; # TODO:config.sops.secrets."postgres/gitea_dbpass".path;
       };
       settings.server = {
         domain = "git.my-domain.tld";
@@ -47,7 +46,12 @@
           "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
           "native:host"
         ];
-        settings = { container = { network = "bridge"; }; };
+        settings = {
+          container = {
+            network = "bridge";
+            options = "--dns 192.168.1.140 --dns 114.114.114.114"; #TODO:use refrence instead of hardcoded value
+          };
+        };
         hostPackages = with pkgs; [
           bash
           coreutils
@@ -60,7 +64,7 @@
           wget
         ];
         tokenFile =
-          "/root/gitea_runnertoken"; # config.sops.secrets."gitea_runnertoken".path;
+          "/root/gitea_runnertoken"; # TODO:config.sops.secrets."gitea_runnertoken".path;
       };
     };
   };
