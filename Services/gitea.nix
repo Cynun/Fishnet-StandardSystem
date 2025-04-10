@@ -1,7 +1,7 @@
 { config, pkgs, ... }: {
   services = {
 
-    nginx.virtualHosts."git.my-domain.tld" = {
+    nginx.virtualHosts."${config.services.gitea.settings.server.domain}" = {
       locations."/" = { proxyPass = "http://localhost:3000/"; };
     };
 
