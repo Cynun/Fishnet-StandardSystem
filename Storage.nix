@@ -2,12 +2,20 @@
 #
 # This is acturally optional
 
-{ config, lib, pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ kubo ];
+{ config, lib, pkgs, ... }:
 
-  services = {
+let
+  cfg = config.fishnet;
+in
+{
+  options = {
+    fishnet.storage.enable = lib.mkEnableOption "fishnet.storage";
+  };
 
-    kubo = {
+  config = lib.mkIf cfg.storage.enable {
+    environment.systemPackages = with pkgs; [ kubo ];
+
+    services.kubo = {
       settings = {
         Addresses = {
           API = "/ip4/127.0.0.1/tcp/5001";
@@ -25,5 +33,4 @@
       autoMount = true;
     };
   };
-
 }
