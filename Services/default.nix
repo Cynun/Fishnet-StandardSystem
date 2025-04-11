@@ -7,5 +7,5 @@
 {
   imports = [ ./gitea.nix ./matrix.nix ];
 
-  services.dnsmasq.settings.domain-needed = true;
+  Services.dnsmasq.settings.domain-needed = true;
 }

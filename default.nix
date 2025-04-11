@@ -102,7 +102,7 @@ in {
       };
     };
 
-    services = {
+    Services = {
       # Remember to change cjdns keys and IPv6 address in /etc/cjdns.keys and /etc/cjdns.public!
       # Sadly we can't change the path or fileformat in nix conf for now :(
       cjdns = {
