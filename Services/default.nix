@@ -2,10 +2,18 @@
 #
 #
 
-{ ... }:
+{ config, lib, ... }:
 
 {
   imports = [ ./gitea.nix ./matrix.nix ];
 
-  Services.dnsmasq.settings.domain-needed = true;
+  config = {
+    services.dnsmasq.settings.domain-needed = true;
+    services.nginx = {
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
+    };
+  };
 }

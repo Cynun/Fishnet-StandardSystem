@@ -4,20 +4,16 @@
 # Please modify the placeholder values according to your specific situation.
 # Import this file into your Nixos profile to get it running.
 
-{ config, lib, ... }:
-
-let cfg = config.fishnet;
-in {
+{ config, lib, ... }: {
   imports = [ ./Route.nix ./Storage.nix ./Services ];
 
   options = {
     fishnet = {
-      enable = lib.mkEnableOption "fishnet"; # The description will be expanded to "Whether to enable fishnet."
       Route = lib.mkOption {
         description = "fishnet Route layer options";
-        default = { };
         type = lib.types.submodule {
           options = {
+            enable = lib.mkEnableOption "enable fishnet Route layer";
             wireguard = lib.mkOption {
               description = "Wireguard-related options";
               default = { };
@@ -31,16 +27,17 @@ in {
                     description =
                       "Peers (See https://search.nixos.org/options?channel=24.11&show=networking.wireguard.interfaces.%3Cname%3E.peers&from=0&size=50&sort=relevance&type=packages&query=networking.wireguard)";
                     default = [ ];
-                    example = ''[ {
-                        # Don't forget to name your peers.
-                        # Public key of the peer (not a file path).
-                        publicKey = "{client public key}";
-                        # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
-                        allowedIPs = [
-                          "10.100.0.2/32"
-                          "2001:db8::2/64"
-                        ];
-                      } ]'';
+                    example = ''
+                      [ {
+                                              # Don't forget to name your peers.
+                                              # Public key of the peer (not a file path).
+                                              publicKey = "{client public key}";
+                                              # List of IPs assigned to this peer within the tunnel subnet. Used to configure routing.
+                                              allowedIPs = [
+                                                "10.100.0.2/32"
+                                                "2001:db8::2/64"
+                                              ];
+                                            } ]'';
                     type = lib.types.listOf lib.types.attrs;
                   };
                 };
@@ -82,53 +79,55 @@ in {
           };
         };
       };
+
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    networking = {
-      nat.enable = true;
-      nat.enableIPv6 = true;
+  config = lib.mkIf config.fishnet.Route.enable {
+      networking = {
+        nat.enable = true;
+        nat.enableIPv6 = true;
 
-      wireguard.enable = true;
-      wireguard.interfaces.wg0 = {
-        ips = [
-          # Always sync with IPs in postUp & preDown.
-          "10.100.0.1/24"
-          "2001:db8::1/64"
-        ];
-        privateKeyFile = cfg.Route.wireguard.privateKeyFile;
-        peers = cfg.Route.wireguard.peers;
-      };
-    };
-
-    Services = {
-      # Remember to change cjdns keys and IPv6 address in /etc/cjdns.keys and /etc/cjdns.public!
-      # Sadly we can't change the path or fileformat in nix conf for now :(
-      cjdns = {
-        enable = true;
-
-        UDPInterface.bind = cfg.Route.cjdns.UDPInterface.bind;
-
-        authorizedPasswords = cfg.Route.cjdns.authorizedPasswords;
-
-        UDPInterface.connectTo = cfg.Route.cjdns.UDPInterface.connectTo;
+        wireguard.enable = true;
+        wireguard.interfaces.wg0 = {
+          ips = [
+            # Always sync with IPs in postUp & preDown.
+            "10.100.0.1/24"
+            "2001:db8::1/64"
+          ];
+          privateKeyFile = config.fishnet.Route.wireguard.privateKeyFile;
+          peers = config.fishnet.Route.wireguard.peers;
+        };
       };
 
-      /* kubo = {
-           enable = true;
+      services = {
+        # Remember to change cjdns keys and IPv6 address in /etc/cjdns.keys and /etc/cjdns.public!
+        # Sadly we can't change the path or fileformat in nix conf for now :(
+        cjdns = {
+          enable = true;
 
-           # See more at https://github.com/ipfs/kubo/blob/master/docs/config.md
-           settings = {
-             #Addresses.Gateway = "/ip4/0.0.0.0/tcp/8080";
-             #Addresses.API = "/ip4/0.0.0.0/tcp/5001";
-             #Identity.PrivKey = "";
-             Bootstrap = [ ];
-             Datastore.StorageMax = "10GB";
+          UDPInterface.bind = config.fishnet.Route.cjdns.UDPInterface.bind;
+
+          authorizedPasswords = config.fishnet.Route.cjdns.authorizedPasswords;
+
+          UDPInterface.connectTo =
+            config.fishnet.Route.cjdns.UDPInterface.connectTo;
+        };
+
+        /* kubo = {
+             enable = true;
+
+             # See more at https://github.com/ipfs/kubo/blob/master/docs/config.md
+             settings = {
+               #Addresses.Gateway = "/ip4/0.0.0.0/tcp/8080";
+               #Addresses.API = "/ip4/0.0.0.0/tcp/5001";
+               #Identity.PrivKey = "";
+               Bootstrap = [ ];
+               Datastore.StorageMax = "10GB";
+             };
            };
-         };
-      */
+        */
 
+      };
     };
-  };
 }

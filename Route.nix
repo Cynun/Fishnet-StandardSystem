@@ -4,7 +4,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  config = lib.mkIf config.fishnet.enable {
+  config = lib.mkIf config.fishnet.Route.enable {
     environment.systemPackages = with pkgs; [
       iptables
       cjdns

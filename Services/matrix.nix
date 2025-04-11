@@ -1,12 +1,12 @@
 # Matrix&Element Configurations
 #
-# Woomy
+# 
 
 { config, pkgs, lib, ... }:
 
 {
-  options = {
-    fishnet.Services.matrix = {
+  options.fishnet.Services = {
+    matrix = {
       enable = lib.mkEnableOption "fishnet.Services.matrix";
       server.domain = lib.mkOption {
         description = "Domain of matrix server";
@@ -22,26 +22,31 @@
   };
 
   config = lib.mkIf config.fishnet.Services.matrix.enable {
-    Services = {
-      # See https://nixos.org/manual/nixos/stable/index.html#module-Services-matrix-element-web
-      nginx.virtualHosts."${config.fishnet.Services.matrix.webclient.domain}" = {
-        root = pkgs.element-web.override {
-          # See https://github.com/element-hq/element-web/blob/develop/config.sample.json
-          conf = {
-            default_theme = "dark";
-            "default_server_config" = {
-              "m.homeserver" = {
-                "base_url" = "http://${config.fishnet.Services.matrix.server.domain}";
-                "server_name" = "${config.fishnet.Services.matrix.server.domain}";
+    services = {
+
+      nginx = {
+        enable = true;
+
+        # See https://nixos.org/manual/nixos/stable/index.html#module-Services-matrix-element-web
+        virtualHosts."${config.fishnet.Services.matrix.webclient.domain}" = {
+          root = pkgs.element-web.override {
+            # See https://github.com/element-hq/element-web/blob/develop/config.sample.json
+            conf = {
+              default_theme = "dark";
+              "default_server_config" = {
+                "m.homeserver" = {
+                  "base_url" =
+                    "http://${config.fishnet.Services.matrix.server.domain}";
+                  "server_name" =
+                    "${config.fishnet.Services.matrix.server.domain}";
+                };
               };
             };
           };
         };
-      };
 
-      nginx.virtualHosts."${config.fishnet.Services.matrix.server.domain}" = {
-        locations."/" = {
-          proxyPass = "http://localhost:8008/";
+        virtualHosts."${config.fishnet.Services.matrix.server.domain}" = {
+          locations."/" = { proxyPass = "http://localhost:8008/"; };
         };
       };
 
@@ -60,9 +65,11 @@
       # };
 
       matrix-synapse = {
+        enable=true;
         settings = {
           server_name = config.fishnet.Services.matrix.server.domain;
-          registration_shared_secret = "svWfPnOGX6xkSDnn2wA2uaAgxPpplDyOvaxP1bklQd2l91J1QJpOWiyrqqSN3Pha";
+          registration_shared_secret =
+            "svWfPnOGX6xkSDnn2wA2uaAgxPpplDyOvaxP1bklQd2l91J1QJpOWiyrqqSN3Pha";
 
           database.name = "sqlite3"; # "psycopg2";
 
