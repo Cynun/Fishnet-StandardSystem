@@ -13,7 +13,7 @@ in
   imports = [
     ./Route.nix
     ./Storage.nix
-    ./Service
+    ./Services
   ];
 
   options = {
@@ -91,8 +91,8 @@ in
           "10.100.0.1/24"
           "2001:db8::1/64"
         ];
-        privateKeyFile = cfg.fishnet.wireguard.privateKeyFile;
-        peers = cfg.fishnet.wireguard.peers;
+        privateKeyFile = cfg.wireguard.privateKeyFile;
+        peers = cfg.wireguard.peers;
       };
     };
 
