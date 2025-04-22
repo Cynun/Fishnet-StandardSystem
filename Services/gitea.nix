@@ -104,8 +104,6 @@
               rsync
               wget
             ];
-            tokenFile =
-              "/root/gitea_runnertoken"; # TODO:config.sops.secrets."gitea_runnertoken".path;
           };
         };
     };

@@ -20,6 +20,14 @@
                     description = "Path to private key file";
                     type = lib.types.string;
                   };
+                  ips = lib.mkOption {
+                    description = "ips for wg interface";
+                    type = lib.types.listOf lib.types.string;
+                  };
+                  port = lib.mkOption {
+                    description = "listenPort for wg interface";
+                    type = lib.types.port;
+                  };
                   peers = lib.mkOption {
                     description =
                       "Peers (See https://search.nixos.org/options?channel=24.11&show=networking.wireguard.interfaces.%3Cname%3E.peers&from=0&size=50&sort=relevance&type=packages&query=networking.wireguard)";
@@ -93,14 +101,12 @@
       wireguard.enable = true;
       wireguard.interfaces.wg0 = {
 
-        ips = [
-          # Always sync with IPs in postUp & preDown.
-          "10.100.0.1/24"
-          "2001:db8::1/64"
-        ];
+        ips = config.fishnet.Route.wireguard.ips;
+        listenPort = config.fishnet.Route.wireguard.port;
         privateKeyFile = config.fishnet.Route.wireguard.privateKeyFile;
         peers = config.fishnet.Route.wireguard.peers;
 
+/*
         postSetup = ''
           ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -j ACCEPT
           ${pkgs.iptables}/bin/ip6tables -A FORWARD -i wg0 -j ACCEPT
@@ -127,6 +133,7 @@
               ${pkgs.iptables}/bin/${cmd} -t nat -D POSTROUTING -s ${ip} -o tun0 -j MASQUERADE
             '') config.networking.wireguard.interfaces.wg0.ips}
         '';
+        */
 
       };
     };

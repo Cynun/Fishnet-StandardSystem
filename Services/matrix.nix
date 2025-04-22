@@ -51,28 +51,29 @@
       };
 
       # We can only use sqlite3 for matrix when "i18n.defaultLocale" is not "C"...
-      # postgresql = {
-      #   ensureDatabases = [ "matrix-synapse" ];
-      #   ensureUsers = [{
-      #     name = "matrix-synapse";
-      #     ensureDBOwnership = true;
-      #     ensureClauses = {
-      #       createdb = true;
-      #       createrole = true;
-      #       login = true;
-      #     };
-      #   }];
-      # };
+      postgresql = {
+        ensureDatabases = [ "matrix-synapse" ];
+        ensureUsers = [{
+          name = "matrix-synapse";
+          ensureDBOwnership = true;
+          ensureClauses = {
+            createdb = true;
+            createrole = true;
+            login = true;
+          };
+        }];
+      };
 
       matrix-synapse = {
-        enable=true;
+        enable = true;
+        enableRegistrationScript = true;
         settings = {
           server_name = config.fishnet.Services.matrix.server.domain;
           registration_shared_secret =
             "svWfPnOGX6xkSDnn2wA2uaAgxPpplDyOvaxP1bklQd2l91J1QJpOWiyrqqSN3Pha";
 
-          database.name = "sqlite3"; # "psycopg2";
-
+          database.name = "psycopg2"; # "sqlite3";
+          database.allow_unsafe_locale=true;
           extraConfig = ''
             max_upload_size: "50M"
           '';
